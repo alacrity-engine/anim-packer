@@ -10,9 +10,9 @@ import (
 	"path"
 	"strings"
 
+	"github.com/alacrity-engine/core/geometry"
 	codec "github.com/alacrity-engine/resource-codec"
-	"github.com/boltdb/bolt"
-	"github.com/faiface/pixel"
+	bolt "go.etcd.io/bbolt"
 )
 
 var (
@@ -35,7 +35,7 @@ func parseFlags() {
 	flag.Parse()
 }
 
-func loadPicture(pic string) (*pixel.PictureData, error) {
+func loadPicture(pic string) (*codec.Picture, error) {
 	file, err := os.Open(pic)
 
 	if err != nil {
@@ -49,7 +49,7 @@ func loadPicture(pic string) (*pixel.PictureData, error) {
 		return nil, err
 	}
 
-	return pixel.PictureDataFromImage(img), nil
+	return codec.NewPictureFromImage(img)
 }
 
 func main() {
@@ -98,8 +98,12 @@ func main() {
 			spritesheetInfo.Name()))
 		handleError(err)
 
+		// Compress the spritesheet.
+		compressedSpritesheet, err := spritesheet.Compress()
+		handleError(err)
+
 		// Serialize picture data to byte array.
-		spritesheetBytes, err := codec.PictureDataToBytes(spritesheet)
+		spritesheetBytes, err := compressedSpritesheet.ToBytes()
 		handleError(err)
 
 		// Save the spritesheet to the database.
@@ -126,7 +130,7 @@ func main() {
 	// Read animations data.
 	contents, err := ioutil.ReadFile(animationsIndexPath)
 	handleError(err)
-	animationsMeta, err := codec.ReadAnimationsData(contents)
+	animationsMeta, err := ReadAnimationsData(contents)
 	handleError(err)
 
 	// Read animation tags.
@@ -148,7 +152,7 @@ func main() {
 	// Read spritesheets data.
 	contents, err = ioutil.ReadFile(spritesheetsMetadataPath)
 	handleError(err)
-	spritesheetsMeta, err := codec.ReadSpritesheetsData(contents)
+	spritesheetsMeta, err := ReadSpritesheetsData(contents)
 	handleError(err)
 
 	for _, animMeta := range animationsMeta {
@@ -172,17 +176,20 @@ func main() {
 			return nil
 		})
 		handleError(err)
-		picture, err := codec.PictureDataFromBytes(picData)
+
+		compressedPicture, err := codec.CompressedPictureFromBytes(picData)
+		handleError(err)
+		picture, err := compressedPicture.Decompress()
 		handleError(err)
 		// Load its metadata.
 		spritesheetMeta := spritesheetsMeta[animMeta.Spritesheet]
 		// Get animation frames.
-		frames := codec.GetSpritesheetFrames(picture, spritesheetMeta.Width, spritesheetMeta.Height)
+		frames := picture.GetSpritesheetFrames(spritesheetMeta.Width, spritesheetMeta.Height)
 
 		// Assemble the animation.
 		anim := &codec.AnimationData{
 			Spritesheet: animMeta.Spritesheet,
-			Frames:      make([]pixel.Rect, 0),
+			Frames:      make([]geometry.Rect, 0),
 			Durations:   make([]int32, 0),
 		}
 
@@ -192,7 +199,7 @@ func main() {
 		}
 
 		// Store the animation in the database.
-		animData, err := codec.AnimationDataToBytes(anim)
+		animData, err := anim.ToBytes()
 		handleError(err)
 		err = resourceFile.Update(func(tx *bolt.Tx) error {
 			buck := tx.Bucket([]byte("animations"))
