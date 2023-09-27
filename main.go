@@ -165,11 +165,11 @@ func main() {
 				return fmt.Errorf("no spritesheets bucket present")
 			}
 
-			picData = buck.Get([]byte(animMeta.Spritesheet))
+			picData = buck.Get([]byte(animMeta.SpritesheetID))
 
 			if picData == nil {
 				return fmt.Errorf("no spritesheet named '%s' found",
-					animMeta.Spritesheet)
+					animMeta.SpritesheetID)
 			}
 
 			return nil
@@ -181,13 +181,13 @@ func main() {
 		picture, err := compressedPicture.Decompress()
 		handleError(err)
 		// Load its metadata.
-		spritesheetMeta := spritesheetsMeta[animMeta.Spritesheet]
+		spritesheetMeta := spritesheetsMeta[animMeta.SpritesheetID]
 		// Get animation frames.
 		frames := picture.GetSpritesheetFrames(spritesheetMeta.Width, spritesheetMeta.Height)
 
 		// Assemble the animation.
 		anim := &codec.AnimationData{
-			Spritesheet: animMeta.Spritesheet,
+			Spritesheet: animMeta.SpritesheetID,
 			Frames:      make([]geometry.Rect, 0),
 			Durations:   make([]int32, 0),
 		}
