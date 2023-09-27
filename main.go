@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"image"
 	_ "image/png"
-	"io/ioutil"
 	"os"
 	"path"
 	"strings"
@@ -56,7 +55,7 @@ func main() {
 	parseFlags()
 
 	// Get spritesheets from the directory.
-	spritesheets, err := ioutil.ReadDir(spritesheetsPath)
+	spritesheets, err := os.ReadDir(spritesheetsPath)
 	handleError(err)
 	// Open the resource file.
 	resourceFile, err := bolt.Open(resourceFilePath, 0666, nil)
@@ -128,7 +127,7 @@ func main() {
 	}
 
 	// Read animations data.
-	contents, err := ioutil.ReadFile(animationsIndexPath)
+	contents, err := os.ReadFile(animationsIndexPath)
 	handleError(err)
 	animationsMeta, err := ReadAnimationsData(contents)
 	handleError(err)
@@ -150,7 +149,7 @@ func main() {
 	}
 
 	// Read spritesheets data.
-	contents, err = ioutil.ReadFile(spritesheetsMetadataPath)
+	contents, err = os.ReadFile(spritesheetsMetadataPath)
 	handleError(err)
 	spritesheetsMeta, err := ReadSpritesheetsData(contents)
 	handleError(err)
