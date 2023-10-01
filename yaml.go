@@ -16,16 +16,3 @@ func ReadAnimationsData(data []byte) ([]AnimationMeta, error) {
 
 	return animations, nil
 }
-
-// ReadSpritesheetsData deserializes the spritesheets
-// metadata stored as YAML.
-func ReadSpritesheetsData(data []byte) (map[string]SpritesheetMeta, error) {
-	spritesheets := make(map[string]SpritesheetMeta, 0)
-	err := yaml.Unmarshal(data, &spritesheets)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return spritesheets, nil
-}
