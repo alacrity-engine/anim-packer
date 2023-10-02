@@ -3,13 +3,13 @@ module github.com/alacrity-engine/anim-packer
 go 1.21.1
 
 require (
-	github.com/alacrity-engine/resource-codec v0.0.0-20231001164950-612d7e63703a
+	github.com/alacrity-engine/core v0.0.0-20231001172047-1e65192e98d8
+	github.com/alacrity-engine/resource-codec v0.0.0-20231002154621-8a3f15bfaab1
 	go.etcd.io/bbolt v1.3.7
 	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (
-	github.com/alacrity-engine/core v0.0.0-20230921152925-ae0bc8cebd4f // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.2.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1 // indirect
 	github.com/ethereum/go-ethereum v1.10.25 // indirect

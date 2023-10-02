@@ -126,9 +126,10 @@ func main() {
 
 			// Assemble the animation.
 			anim := &codec.AnimationData{
-				TextureID: animationMeta.TextureID,
-				Frames:    make([]geometry.Rect, 0),
-				Durations: make([]int32, 0),
+				SpritesheetID: animationMeta.SpritesheetID,
+				TextureID:     animationMeta.TextureID,
+				Frames:        make([]geometry.Rect, 0),
+				Durations:     make([]int32, 0),
 			}
 
 			for _, frameMeta := range animationMeta.Frames {
