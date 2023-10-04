@@ -6,7 +6,7 @@ import (
 	_ "image/png"
 	"os"
 
-	"github.com/alacrity-engine/core/geometry"
+	"github.com/alacrity-engine/core/math/geometry"
 	codec "github.com/alacrity-engine/resource-codec"
 	bolt "go.etcd.io/bbolt"
 )
