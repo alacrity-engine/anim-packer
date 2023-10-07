@@ -12,19 +12,13 @@ import (
 )
 
 var (
-	spritesheetsPath         string
-	animationsIndexPath      string
-	spritesheetsMetadataPath string
-	resourceFilePath         string
+	animationsIndexPath string
+	resourceFilePath    string
 )
 
 func parseFlags() {
-	flag.StringVar(&spritesheetsPath, "spritesheets", "./spritesheets",
-		"Path to the directory where spritesheets are stored.")
 	flag.StringVar(&animationsIndexPath, "animations-meta", "./animations-meta.yml",
 		"Path to the file where animation descriptions are stored.")
-	flag.StringVar(&spritesheetsMetadataPath, "spritesheets-meta",
-		"./spritesheets-meta.yml", "Path to the spritesheets metadata file.")
 	flag.StringVar(&resourceFilePath, "out", "./stage.res",
 		"Resource file to store animations and spritesheets.")
 
@@ -157,11 +151,16 @@ func main() {
 
 			return nil
 		})
+		handleError(err)
 	}
 
 	for tagID, tag := range animTags {
 		err = resourceFile.Update(func(tx *bolt.Tx) error {
-			buck := tx.Bucket([]byte("tags"))
+			buck, err := tx.CreateBucketIfNotExists([]byte("tags"))
+
+			if err != nil {
+				return err
+			}
 
 			if buck == nil {
 				return fmt.Errorf("no tags bucket present")
@@ -181,6 +180,7 @@ func main() {
 
 			return nil
 		})
+		handleError(err)
 	}
 }
 

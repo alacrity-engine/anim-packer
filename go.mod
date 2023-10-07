@@ -3,8 +3,8 @@ module github.com/alacrity-engine/anim-packer
 go 1.21.1
 
 require (
-	github.com/alacrity-engine/core v0.0.0-20231004055325-ab7a7367cf11
-	github.com/alacrity-engine/resource-codec v0.0.0-20231004061006-0560495eef6c
+	github.com/alacrity-engine/core v0.0.0-20231006082430-1971d8386e22
+	github.com/alacrity-engine/resource-codec v0.0.0-20231006094248-26178d04f596
 	go.etcd.io/bbolt v1.3.7
 	gopkg.in/yaml.v2 v2.4.0
 )
