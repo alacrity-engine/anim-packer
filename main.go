@@ -154,8 +154,11 @@ func main() {
 					return err
 				}
 
-				frames := compressedPic.GetSpritesheetFrames(
-					int(ss.Width), int(ss.Height))
+				frames, err := compressedPic.GetSpritesheetFrames(ss)
+
+				if err != nil {
+					return err
+				}
 
 				// Assemble the animation.
 				anim := &codec.AnimationData{
